@@ -1,5 +1,6 @@
 var ctxCabecalho;
 var ctxLinks;
+var ctxConteudo
 var txtConteudo;
 var ctxRodape;
 var ancora = true;
@@ -39,13 +40,29 @@ function configHTMLCabecalho() {
 function configHTMLConteudo() {
     txtConteudo = "";
     txtConteudo = document.querySelector("#txtConteudo").value;
+    img = document.getElementById("imagem").value;
+    img = img.split("\\");
+    txtConteudo += "<img src='" +  img.pop() + "'>";
     return txtConteudo;
+}
+function configEstiloConteudo(){
+    let alturaImg = document.getElementById("altura").value;
+    let larguraImg = document.getElementById("largura").value;
+    ctxConteudo = '#conteudo img{\n width:' + larguraImg + 'px;\nheight:' + alturaImg + 'px;\n}\n';
+    return ctxConteudo;
+
 }
 function gerarCodigo() {
     //Cóigo para CSS
     let codeCSS = document.querySelector("#codeCSS");
     let css = configEstiloCabecalho();
-    css += configEstiloLinks();
+    css += configEstiloConteudo(); 
+    if (ancora) {
+        css += configEstiloLinks();
+        links = "<nav id='links'>\n" + configHtmlLinks() + "\n</nav>\n";
+    }  else{
+        links = '';
+    }
     codeCSS.value = css;
     //Código para HTML
     let codeHTML = document.querySelector("#codeHTML");
@@ -54,8 +71,7 @@ function gerarCodigo() {
         "<link rel='stylesheet' href='estilo.css'>\n" +
         "<title>Miha página</title>\n" +
         "</head>\n<body>" +
-        "<div id='cabecalho'>" + configHTMLCabecalho() + "</div>\n" +
-        "<nav id='links'>\n" + configHtmlLinks() + "\n</nav>\n" +
+        "<div id='cabecalho'>" + configHTMLCabecalho() + "</div>\n" + links +
         "<div id='conteudo'>\n" + configHTMLConteudo() + "\n</div>\n" +
         "</body>\n</html>";
     codeHTML.value = ctxHTML;
@@ -134,6 +150,6 @@ function renderIframe(){
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
     iframeDoc.open();
     iframeDoc.write('<!DOCTYPE html>\n'+doc.documentElement.outerHTML);
-    iframe.close();
+    iframeDoc.close();
 
 }
